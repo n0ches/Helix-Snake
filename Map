@@ -1,0 +1,62 @@
+import enigma.core.Enigma;
+
+public class GameTest {
+   public static void main(String[] args) throws Exception {
+      enigma.console.Console cn= Enigma.getConsole("Board",100,30);
+      Object array [][] = new Object[25][60];
+      for(int i=0;i<24;i++) {
+    	  if(i==0 || i==23) {
+    		  for(int j=0;j<60;j++) {
+        		  array[i][j]='#';
+        	  }
+    	  }
+    	  else {
+    		  for(int j=0;j<60;j++) {
+    			  if(j==0 || j==59) {
+    				  array[i][j]='#';
+    			  }
+    			  else {
+    				  array[i][j]=' ';
+    			  }
+        	  }
+    	  }
+    	  
+      }
+      for (int i = 0; i < 3; i++) {
+    	  int randomCodon=(int)(Math.random()*4)+1;
+          int randomX=(int)(Math.random()*22)+1;
+          int randomY=(int)(Math.random()*57)+1;
+          if (randomCodon==1) {
+        	  array[randomX][randomY]='A';
+    	  }
+          else if (randomCodon==2) {
+        	  array[randomX][randomY]='C';
+    	  }
+          else if (randomCodon==3) {
+        	  array[randomX][randomY]='T';
+    	  }
+          else if (randomCodon==4) {
+        	  array[randomX][randomY]='G';
+    	  }
+	}
+      
+      
+      
+      for (int i = 0; i < 24; i++) {
+		for (int j = 0; j < 60; j++) {
+			//cn.getTextWindow().setCursorPosition(1+j, 1+i);
+			System.out.print(array[i][j]);
+		}
+		System.out.println();
+	}
+      cn.getTextWindow().setCursorPosition(65, 1);
+      System.out.println("SCORE: ");
+      cn.getTextWindow().setCursorPosition(65, 2);
+      System.out.println("----------");
+      cn.getTextWindow().setCursorPosition(65, 22);
+      System.out.println("Level: ");
+      cn.getTextWindow().setCursorPosition(65, 23);
+      System.out.println("Time: ");
+   }
+}
+

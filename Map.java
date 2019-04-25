@@ -13,7 +13,6 @@ public class Map {
 		randomCodon=0;
 	}
 	public void mapInitialize(enigma.console.Console cn) {
-		Object array [][] = new Object[25][60];
 	      for(int i=0;i<24;i++) {
 	    	  if(i==0 || i==23) {
 	    		  for(int j=0;j<60;j++) {

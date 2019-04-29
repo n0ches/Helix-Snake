@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class MapSnake {
 	//object array
-	private Object maps[][];
+	static Object maps[][];
 	private int randomX;
 	private int randomY;
 	private int randomCodon;
@@ -93,7 +93,7 @@ public class MapSnake {
 	      boolean controller = false;
 	      while(controller==false) {
 	    	  //random possible indexes.
-	    	  startingPointY = random.nextInt(30)+4;
+	    	  startingPointY = random.nextInt(28)+4;
 		      startingPointX = random.nextInt(24)+1;
 	    	  if((char)maps[startingPointX][startingPointY] == ' ' && (char)maps[startingPointX][startingPointY+1] == ' ' && (char)maps[startingPointX][startingPointY+2] == ' ')
 	    		  controller = true;
@@ -106,15 +106,16 @@ public class MapSnake {
 			for(int i = 0; i < 3; i++) {
 				int rnd = rand.nextInt(4);
 				snake.add(ch[rnd],startingPointX, startingPointY);
-				startingPointY++;
+				startingPointY++; //increase Y index.
 			}	
 			Node temp = snake.getHead();
+			//copy list to game array
 	    	while(temp != null) { 
-	    	  maps[startingPointX][startingPointY] = temp.getData(); 
-	    	  System.out.println(temp.getData());
-	    	  System.out.println(maps[startingPointX][startingPointY]);
+	    	  maps[temp.getCoordinateX()][temp.getCoordinateY()] = temp.getData(); 
+	   	      System.out.println(temp.getData());
+	   	      System.out.println(maps[startingPointX][startingPointY]);
 	    	  temp = temp.getLink();
-	    	  startingPointY++;  //increase y coordinate
+	    	
 	      }
 		// For letters
 		
@@ -138,8 +139,9 @@ public class MapSnake {
 	      System.out.println("Level: ");
 	      cn.getTextWindow().setCursorPosition(65, 23);
 	      System.out.println("Time: ");
+
 	}
-//end display
+    //end display
 	
 	
 	//GET-SET
@@ -149,4 +151,15 @@ public class MapSnake {
 	public void setSnake(SingleLinkedList snake) {
 		this.snake = snake;
 	}
+
+
+	public Object[][] getMaps() {
+		return maps;
+	}
+
+
+	public void setMaps(Object[][] maps) {
+		this.maps = maps;
+	}
+	
 }

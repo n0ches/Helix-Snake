@@ -1,39 +1,40 @@
-import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import enigma.console.Console;
-import enigma.core.Enigma;
 
 public class Main {
 	
-	//static console.
-	static Console console;
-	static int lastDirection=KeyEvent.VK_RIGHT;
-
-	public static void main(String[] args) throws IOException {
-		console = Enigma.getConsole(null, 80,25,15, 0);  
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		MapSnake newGame = new MapSnake();
-		newGame.displayMap(console);
-		br.readLine();
+	//changeable timer clock.
+	static int t=100;
+	
+	public static void main(String[] args) throws Exception {
+		/*char wall=(int)255;
+		System.out.println(wall);*/
 		
-		  
-		  Timer myTimer = new Timer();
+		
+		//new SnakeGame object.
+		SnakeGame game=new SnakeGame();
+		
+		//first properties for starting of game.
+		game.init();
+		
+		
+		//timer starting.
+		Timer myTimer = new Timer();
 		  TimerTask gorev = new TimerTask(){
 		 
 		  		@Override
 		  		public void run(){
-		  			Game game = new Game(console);
+		  			
+		  			//all game process.
+		  			game.play();
+		  			
 		  		}
 		  };
 		  
-		  
-		  myTimer.schedule(gorev,0,500); //  10000ms = 1sn
+		  //playing game per t.
+		  myTimer.schedule(gorev,0,t); //  10000ms = 1sn
 		
 	}
-
+	
 }

@@ -1,5 +1,4 @@
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 
 public class Main {
@@ -13,28 +12,13 @@ public class Main {
 		
 		
 		//new SnakeGame object.
-		SnakeGame game=new SnakeGame();
-		
-		//first properties for starting of game.
-		game.init();
+		Game newgame = new Game();
+		newgame.menu();
 		
 		
-		//timer starting.
-		Timer myTimer = new Timer();
-		  TimerTask gorev = new TimerTask(){
-		 
-		  		@Override
-		  		public void run(){
-		  			
-		  			//all game process.
-		  			game.play();
-		  			
-		  		}
-		  };
-		  
-		  //playing game per t.
-		  myTimer.schedule(gorev,0,t); //  10000ms = 1sn
 		
+		
+				
 	}
 	
 }

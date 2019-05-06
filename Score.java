@@ -22,7 +22,7 @@ public class Score {
 	
 	
 	//string array to keep gave points.
-	String[] AllPoints = new String[25];
+	String[] AllPoints = new String[50];
 	
 	//allPoints index counter
 	private int index = 0; 
@@ -129,14 +129,26 @@ public class Score {
 	//printing points.
 	public void printingCodons(enigma.console.Console console) {
 		int i = 4;
+		int a = 62;
 		console.setTextAttributes(new TextAttributes(new Color(255,255,255)));
-	    console.getTextWindow().setCursorPosition(65, i);
+	    console.getTextWindow().setCursorPosition(a, i);
 	    
 	    for (int j = 0; j < AllPoints.length; j++) {
-	    	if(AllPoints[j]!=null)
-	    		System.out.print(AllPoints[j]);
-			i++;
-			console.getTextWindow().setCursorPosition(65, i);
+	    	if(j>=17) {
+	    		a = 68;
+	    		i = 4;
+	    		console.getTextWindow().setCursorPosition(a, i);
+	    		if(AllPoints[j]!=null)
+		    		System.out.print(AllPoints[j]);
+	    		i++;
+	    	}
+	    	else {
+	    		if(AllPoints[j]!=null)
+		    		System.out.print(AllPoints[j]);
+				i++;
+				console.getTextWindow().setCursorPosition(a, i);
+	    	}
+	    	
 		}
 	}
 	//print end.

@@ -92,40 +92,54 @@ public class SnakeGame {
 	//all game processing.
 	public void play() {
 		
-			if(NewScore.getCounter()==3)
-				NewScore.givePoint(snake);
-			//key listener is added
-			cn.getTextWindow().addKeyListener(keyboard);
-			getMove(rkey);
-			
-			//controlling game over or not ?
-			if(gameOver(this.snake,this.maps)) {
-				
-				System.out.println("Game over!");
-				//HighScores methods.
-				NewScore.addHighScores(NewScore.getScore());
-				NewScore.getHighscores().display();
-				//unused input variable.
-				@SuppressWarnings("unused")
-				String input=sc.nextLine();
-				//exit game.
-  				System.exit(1);
-			}
-			else {
-				//game methods.
-				grow(this.snake,this.maps);
-				move(this.snake,this.maps);
-				displayMap(cn);
-				NewScore.printingCodons(cn);
-				generateWall(this.maps);
-				
-				//determining game level
-				counterOfTime++;
-				if(counterOfTime==1000/Main.t) {
-					time++;
-					counterOfTime=0;
-				}
-			}
+		//timer starting.
+				Timer myTimer = new Timer();
+				  TimerTask gorev = new TimerTask(){
+				 
+				  		@Override
+				  		public void run(){
+				  			
+				  			if(NewScore.getCounter()==3)
+								NewScore.givePoint(snake);
+							//key listener is added
+							cn.getTextWindow().addKeyListener(keyboard);
+							getMove(rkey);
+							
+							//controlling game over or not ?
+							if(gameOver(snake,maps)) {
+								cn.getTextWindow().setCursorPosition(0, 26);
+								System.out.println("Game over!");
+								//HighScores methods.
+								NewScore.addHighScores(NewScore.getScore());
+								NewScore.getHighscores().display();
+								//unused input variable.
+								@SuppressWarnings("unused")
+								String input=sc.nextLine();
+								//exit game.
+				  				System.exit(1);
+							}
+							else {
+								//game methods.
+								grow(snake,maps);
+								move(snake,maps);
+								displayMap(cn);
+								NewScore.printingCodons(cn);
+								generateWall(maps);
+								
+								//determining game level
+								counterOfTime++;
+								if(counterOfTime==1000/Main.t) {
+									time++;
+									counterOfTime=0;
+								}
+							}
+				  			
+				  		}
+				  };
+				  
+				  //playing game per t.
+				  myTimer.schedule(gorev,0,Main.t); //  10000ms = 1sn
+
 			
 			
 			
@@ -250,27 +264,30 @@ public class SnakeGame {
 				NewScore.setScore(NewScore.getScore()+5);
 				
 				//while.
+				
 				while(grow) {
-				randomCodon=(int)(Math.random()*4)+1;
-		          randomX=(int)(Math.random()*22)+1;
-		          randomY=(int)(Math.random()*57)+1;
-		          if (randomCodon==1 && this.maps[randomX][randomY]==(Object)' ') {
-		        	  this.maps[randomX][randomY]='A';
-		        	  grow=false;
-		    	  }
-		          else if (randomCodon==2 && this.maps[randomX][randomY]==(Object)' ') {
-		        	  this.maps[randomX][randomY]='C';
-		        	  grow=false;
-		    	  }
-		          else if (randomCodon==3 && this.maps[randomX][randomY]==(Object)' ') {
-		        	  this.maps[randomX][randomY]='T';
-		        	  grow=false;
-		    	  }
-		          else if (randomCodon==4 && this.maps[randomX][randomY]==(Object)' ') {
-		        	  this.maps[randomX][randomY]='G';
-		        	  grow=false;
-		    	  }
-		        }
+								randomCodon=(int)(Math.random()*4)+1;
+						          randomX=(int)(Math.random()*22)+1;
+						          randomY=(int)(Math.random()*57)+1;
+						          if((randomX!=1 & randomY!=1) && (randomX!=23 & randomY!=1) && (randomX!=23 & randomY!=58) && (randomX!=1 & randomY!=58) ) {
+						          if (randomCodon==1 && this.maps[randomX][randomY]==(Object)' ' &&this.maps[randomX+1][randomY]==(Object)' '&&this.maps[randomX-1][randomY]==(Object)' '&&this.maps[randomX][randomY+1]==(Object)' '&&this.maps[randomX][randomY-1]==(Object)' ') {
+						        	  this.maps[randomX][randomY]='A';
+						        	  grow=false;
+						    	  }
+						          else if (randomCodon==2 && this.maps[randomX][randomY]==(Object)' ' &&this.maps[randomX+1][randomY]==(Object)' '&&this.maps[randomX-1][randomY]==(Object)' '&&this.maps[randomX][randomY+1]==(Object)' '&&this.maps[randomX][randomY-1]==(Object)' ') {
+						        	  this.maps[randomX][randomY]='C';
+						        	  grow=false;
+						    	  }
+						          else if (randomCodon==3 && this.maps[randomX][randomY]==(Object)' ' &&this.maps[randomX+1][randomY]==(Object)' '&&this.maps[randomX-1][randomY]==(Object)' '&&this.maps[randomX][randomY+1]==(Object)' '&&this.maps[randomX][randomY-1]==(Object)' ') {
+						        	  this.maps[randomX][randomY]='T';
+						        	  grow=false;
+						    	  }
+						          else if (randomCodon==4 && this.maps[randomX][randomY]==(Object)' ' &&this.maps[randomX+1][randomY]==(Object)' '&&this.maps[randomX-1][randomY]==(Object)' '&&this.maps[randomX][randomY+1]==(Object)' '&&this.maps[randomX][randomY-1]==(Object)' ') {
+						        	  this.maps[randomX][randomY]='G';
+						        	  grow=false;
+						    	  }
+						        }
+						       }
 			}
 			//generating new codon after eating
 		}
@@ -556,5 +573,13 @@ public class SnakeGame {
 
 	public void setLastHeadCoordinateY(int lastHeadCoordinateY) {
 		this.lastCoordinateY = lastHeadCoordinateY;
+	}
+	public Score getNewScore() {
+		return NewScore;
+	}
+
+
+	public void setNewScore(Score newScore) {
+		NewScore = newScore;
 	}
 }

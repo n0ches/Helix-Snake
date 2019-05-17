@@ -22,7 +22,7 @@ public class Score {
 	
 	
 	//string array to keep gave points.
-	String[] AllPoints = new String[50];
+	String[] AllPoints = new String[34];
 	
 	//allPoints index counter
 	private int index = 0; 
@@ -75,7 +75,7 @@ public class Score {
 			}
 		    //for end.
 		    
-		    line = br.readLine();
+		    //line = br.readLine();
 		    //new line.
 		}
 		br.close();
@@ -86,42 +86,86 @@ public class Score {
 	
 	//giving point from txt.
 	public void givePoint(SingleLinkedList list) {
-
+		
+		//deleting all point to fill again. 
+		for (int i = 0; i < AllPoints.length; i++) {
+			AllPoints[i] = "";
+		}
+		//for end.
+		//initial index
+		index=0;
+		
+		
 		//initial codon.
 		String codon = "";
 		
-		//copying first three nodes.
+		//temp snake.
+		SingleLinkedList tempsnake = new SingleLinkedList();
+		//temp node
 		Node temp = list.getHead();
-		for (int i = 0; i < 3; i++) {
-			codon += temp.getData();
+		//copying.
+		while(temp!=null)
+		{
+			tempsnake.add(temp.getData(), temp.getCoordinateX(), temp.getCoordinateY());
 			temp = temp.getLink();
 		}
+		//while end.
+		temp = tempsnake.getHead();
+		while(temp != null)
+		{
+			codon = "";
+	    for(int i = 0; i<3;i++){
+			codon=codon+temp.getData();
+			temp = temp.getLink();
+			}
+	//    comparing and giving point.
+	     Node temp1 = aminoacids.getHead();
+	     while(temp1!= null)
+			{
+				Node temp2 = temp1.getRight();
+				//column
+				while(temp2 != null)
+				{
+					if(codon.equalsIgnoreCase((String)temp2.getCodName()))
+					{
+						//increase score.
+						score += temp2.getPoint();
+						if(index==AllPoints.length) {
+							for (int i = 0; i < AllPoints.length; i++) {
+								AllPoints[i]=null;
+							}
+							index=0;
+						}
+						AllPoints[index] = (temp2.getCodName()+ " - " + temp2.getPoint());
+						index++;
+					}
+					//if end.
+					temp2 = temp2.getNextCod();
+				}
+				//while end.
+				temp1 = temp1.getDown();
+			}
+		}
+		//while end.
+	        
+		counter = 0;
+		
+		//copying first three nodes.
+//	    Node temp = list.getHead();
+//	    for (int i = 0; i < 3; i++) {
+//		codon += temp.getData();
+//		temp = temp.getLink();
+//		}
 		//
-		//reverse of copy.
-		String reverseCodon = new StringBuffer(codon).reverse().toString();
+	  //reverse of copy.
+	//	String reverseCodon = new StringBuffer(codon).reverse().toString();
 		
 		//comparing txt and copy
-		temp = aminoacids.getHead();
+		
 		//row
-		while(temp!= null)
-		{
-			Node temp2 = temp.getRight();
-			//column
-			while(temp2 != null)
-			{
-				if(reverseCodon.equalsIgnoreCase((String)temp2.getCodName()))
-				{
-					//increase score.
-					score += temp2.getPoint(); 
-					AllPoints[index] = (temp2.getCodName()+ " - " + temp2.getPoint());
-					index++;
-				}
-				temp2 = temp2.getNextCod();
-			}
-			temp = temp.getDown();
-		}
+		
 		//again counter = 0.
-		counter = 0;
+		
 	}
 	//give point end.
 	
@@ -134,9 +178,15 @@ public class Score {
 	    console.getTextWindow().setCursorPosition(a, i);
 	    
 	    for (int j = 0; j < AllPoints.length; j++) {
+	    	if(a==71 && i==21) {
+	    		i=4;
+	    		a=62;
+	    		j=0;
+	    	}
 	    	if(j>=17) {
-	    		a = 68;
-	    		i = 4;
+	    		if(j==17) {
+	    		a += 9;
+	    		i = 4;}
 	    		console.getTextWindow().setCursorPosition(a, i);
 	    		if(AllPoints[j]!=null)
 		    		System.out.print(AllPoints[j]);

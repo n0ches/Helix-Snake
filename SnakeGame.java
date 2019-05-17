@@ -87,69 +87,7 @@ public class SnakeGame {
 	//init end.
 	
 	
-	
-	
-	//all game processing.
-	public void play() {
-		
-		//timer starting.
-				Timer myTimer = new Timer();
-				  TimerTask gorev = new TimerTask(){
-				 
-				  		@Override
-				  		public void run(){
-				  			
-				  			if(NewScore.getCounter()==3)
-								NewScore.givePoint(snake);
-							//key listener is added
-							cn.getTextWindow().addKeyListener(keyboard);
-							getMove(rkey);
-							
-							//controlling game over or not ?
-							if(gameOver(snake,maps)) {
-								cn.getTextWindow().setCursorPosition(0, 26);
-								System.out.println("Game over!");
-								//HighScores methods.
-								NewScore.addHighScores(NewScore.getScore());
-								NewScore.getHighscores().display();
-								//unused input variable.
-								@SuppressWarnings("unused")
-								String input=sc.nextLine();
-								//exit game.
-				  				System.exit(1);
-							}
-							else {
-								//game methods.
-								grow(snake,maps);
-								move(snake,maps);
-								displayMap(cn);
-								NewScore.printingCodons(cn);
-								generateWall(maps);
-								
-								//determining game level
-								counterOfTime++;
-								if(counterOfTime==1000/Main.t) {
-									time++;
-									counterOfTime=0;
-								}
-							}
-				  			
-				  		}
-				  };
-				  
-				  //playing game per t.
-				  myTimer.schedule(gorev,0,Main.t); //  10000ms = 1sn
-
-			
-			
-			
-	}
-	//play end.
-	
-	
-	
-	
-	//generating new wall to increase level.
+	//generating new wall and bomb to increase level.
 	public void generateWall(Object[][]maps) {
 		counterOfWall++;
 		//boolean variable to determine empty indexes.
@@ -172,10 +110,9 @@ public class SnakeGame {
 	          counterOfWall=0;
 			}
 		}
+		
 	}
-	//wall end.
-	
-	
+	//bomb end.
 	
 	
 	//controlling game is ended or not ?
@@ -213,6 +150,29 @@ public class SnakeGame {
 				}
 			
 			}
+		
+//		if(maps[px][py]==(Object)'&')
+//		{	
+//			int Forcounter;
+//			if(snake.size()%2 == 0)
+//				Forcounter = 0;
+//			else
+//				Forcounter = 1;
+//			
+//				
+//			int temp = snake.size()/2;
+//		//	boolean controller = false;
+//		//	Node temp2 = snake.getHead(); 
+//			for (int i = 0; i < temp; i++) {
+//				snake.delete();
+//			}
+//	//		temp = snake.size() - temp;
+//			temp += Forcounter; 
+//			temp = temp % 3;
+//			
+//			NewScore.setCounter(temp);
+//			
+//		}
 		//eating itself control
 		return flag;
 		}
@@ -427,6 +387,9 @@ public class SnakeGame {
 				else if(this.maps[i][j]==(Object)'#') {
 					cn.setTextAttributes(new TextAttributes(new Color(255,204,204),new Color(255,204,204)));
 				}
+				else if(this.maps[i][j]==(Object)'&') {
+					cn.setTextAttributes(new TextAttributes(new Color(0,0,0),new Color(0,0,0)));
+				}
 				else {
 					cn.setTextAttributes(new TextAttributes(new Color(97,97,97),new Color(97,97,97)));
 				}
@@ -582,4 +545,34 @@ public class SnakeGame {
 	public void setNewScore(Score newScore) {
 		NewScore = newScore;
 	}
+
+
+
+
+	public int getCounterOfTime() {
+		return counterOfTime;
+	}
+
+
+
+
+	public void setCounterOfTime(int counterOfTime) {
+		this.counterOfTime = counterOfTime;
+	}
+
+
+
+
+	public int getTime() {
+		return time;
+	}
+
+
+
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+	
+	
 }

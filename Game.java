@@ -3,6 +3,10 @@ import enigma.event.TextMouseEvent;
 import enigma.event.TextMouseListener;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
 import enigma.console.TextAttributes;
 import java.awt.Color;
 
@@ -24,7 +28,9 @@ public class Game {
    boolean openingFlag;
    boolean scoreFlag;
    boolean menuFlag;
+   boolean flag;
    SnakeGame game=new SnakeGame();
+   Key keyboard =new Key();
 
 	Score score = game.getNewScore();
    Game() throws Exception {   // --- Contructor
@@ -44,11 +50,18 @@ public class Game {
       };
       cn.getTextWindow().addTextMouseListener(tmlis);
       playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;
+     
    }
+  
    	public void menu() throws InterruptedException, IOException {
+   	  playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;
+   	  mousepr=0;
+      game=new SnakeGame();
+   	  game.init();
       clear();
       opening();
       int px=5,py=5;
+      //flag=true;
       while(true) {
          if(mousepr==1) {  // if mouse button pressed
             //cn.getTextWindow().output(mousex,mousey,'#');  // write a char to x,y position without changing cursor position
@@ -63,7 +76,7 @@ public class Game {
             	tutorialFlag=true;
             	openingFlag=false;
             }
-            /*else if((px>=57 && px<=64) && (py==2) && menuFlag && !scoreFlag) {
+            else if((px>=57 && px<=64) && (py==2) && menuFlag && !scoreFlag) {
             	scoreFlag=true;
             	playFlag=true;
             	exitFlag=true;
@@ -72,17 +85,18 @@ public class Game {
             	clear();
             	menuInterface();
             	
-            }*/
+            }
             else if((px>=28 && px<=56) && (py>=11 && py<=14) && scoreFlag && !openingFlag) {
             	playFlag=false;
             	menuFlag=true;
             	scoreFlag=false;
             	clear();
-            	score.allTimeHighScores();
-            	score.getHighscores().display();
+            	//score.allTimeHighScores();
+            	game.getNewScore().getHighscores().display();
+            	//score.getHighscores().display();
             	
             }
-            /*else if((px>=16 && px<=23) && (py==2 ) && playFlag ) {
+            else if((px>=16 && px<=23) && (py==2 ) && playFlag ) {
             	playFlag=false;
             	exitFlag=false;
             	tutorialFlag=false;
@@ -90,10 +104,8 @@ public class Game {
             	scoreFlag=false;
             	menuFlag=false;
             	clear();
-        		game.init();
-        		game.play();
-        		
-            }*/
+            	
+            }
             else if((px>=32 && px<=48) && (py==26) && menuFlag) {
             	clear();
             	menuInterface();
@@ -111,8 +123,62 @@ public class Game {
             	scoreFlag=false;
             	menuFlag=false;
             	clear();
-        		game.init();
-        		game.play();
+            	Timer myTimer = new Timer();
+            	TimerTask gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMove(game.rkey);
+      					
+      					//controlling game over or not ?
+      					if(game.gameOver(game.snake,game.maps)) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						myTimer.cancel();
+      						try {
+								menu();
+							} catch (InterruptedException | IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMap(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWall(game.maps);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.t) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.t); //  10000ms = 1sn
+      		 	
             }
             else if((px>=24 && px<=59) && (py>=16 && py<=20) && tutorialFlag && !openingFlag) {
             	playFlag=false;
@@ -133,6 +199,7 @@ public class Game {
          
          Thread.sleep(40);
       }
+     
    }
    
    public void opening() {

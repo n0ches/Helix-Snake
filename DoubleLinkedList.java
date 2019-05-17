@@ -1,7 +1,9 @@
+import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import enigma.console.TextAttributes;
 import enigma.core.Enigma;
 
 public class DoubleLinkedList {
@@ -35,18 +37,35 @@ public class DoubleLinkedList {
 			// 
 			else {
 				Node temp = head;
-				while(temp.getNext()!= null && newnode.getScore() > temp.getScore()) {
+				Node temp1=null;
+				while(temp.getNext()!= null && newnode.getScore() < temp.getScore()) {
+					temp1=temp;
 					temp = temp.getNext();
 				}
 				//add to end
-				newnode.setPrev(temp);
-				newnode.setNext(temp.getNext());
-				if(temp.getNext() != null) 
-					temp.getNext().setPrev(newnode);
+				
+				if(temp.getNext() != null) {
+					newnode.setPrev(temp1);
+					newnode.setNext(temp);
+					temp1.setNext(newnode);
+					temp.setPrev(newnode);
 					
-				else     //intercalation
-					tail=newnode;
-				temp.setNext(newnode);
+				}
+				else  {
+					if(newnode.getScore()>temp.getScore()) {
+						newnode.setPrev(temp1);
+						newnode.setNext(temp);
+						temp1.setNext(newnode);
+						temp.setPrev(newnode);
+					}
+					else {
+						temp.setNext(newnode);
+						newnode.setPrev(temp);
+					}
+					
+					//intercalation
+				}
+				
 					
 				
 			}
@@ -76,9 +95,10 @@ public class DoubleLinkedList {
 		else {
 			Node temp = head;
 			int rank = 1;
+			cn.setTextAttributes(new TextAttributes(new Color(0,255,0)));
 			System.out.println("                           ___  ___ ___  _ __ ___ ___            ");
 			System.out.println("                          / __|/ __/ _ \\| '__/ _ / __|           ");
-			System.out.println("                | PLAY |  \\__ | (_| (_) | | |  __\\__ \\  | BACK |     ");
+			System.out.println("                          \\__ | (_| (_) | | |  __\\__ \\  | BACK |     ");
 			System.out.println("              ____________|___/\\___\\___/|_|  \\___|___/____________           ");
 			System.out.println("             |                                                    |           ");
 			System.out.println("             |   RANK     NAME                      SCORE         |           ");

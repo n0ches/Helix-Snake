@@ -84,7 +84,7 @@ public class DoubleLinkedList {
 	    		//create an print writer for writing to a file
 	    PrintWriter out = null;
 		try {
-			out = new PrintWriter(new FileWriter("highscores.txt"));
+			out = new PrintWriter(new FileWriter("HighScoreTable.txt"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,4 +137,49 @@ public class DoubleLinkedList {
 		   cn.getTextWindow().setCursorPosition(0, 0);
 		
 	}
+	public int ScoreExist(String name) {
+        Node temp = head;
+        int score = 0;
+        while(temp != null) {
+            if(temp.getName().equals(name)) {
+                score = temp.getScore();
+                break;
+            }
+            else {
+                temp = temp.getNext();
+            }
+        }
+        return score;
+    }
+
+	//Controls the input name whether is already exist or not
+	public boolean isNameExist(String name) {
+		Node temp = head;
+		boolean flag = false;
+		while(temp != null) {
+			if(temp.getName().equals(name)) {
+				flag = true;
+				break;
+			}
+			else {
+				temp = temp.getNext();
+			}
+		}
+		return flag;
+	}
+
+	/**
+	 * @return the head
+	 */
+	public Node getHead() {
+		return head;
+	}
+
+	/**
+	 * @param head the head to set
+	 */
+	public void setHead(Node head) {
+		this.head = head;
+	}
+	
 }

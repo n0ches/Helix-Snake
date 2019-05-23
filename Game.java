@@ -24,15 +24,25 @@ public class Game {
    // ----------------------------------------------------
    boolean playFlag;
    boolean tutorialFlag;
+   boolean tutorial2Flag;
    boolean exitFlag;
    boolean openingFlag;
    boolean scoreFlag;
    boolean menuFlag;
    boolean flag;
+   boolean initScore;
+   boolean playNormal;
+   boolean playAdvanced;
+   boolean playSlow;
+   boolean playAver;
+   boolean playFast;
+   boolean gameMod2;
    SnakeGame game=new SnakeGame();
    Key keyboard =new Key();
-
-	Score score = game.getNewScore();
+   static boolean playAgain = false;
+   Score score = game.getNewScore();
+   Timer myTimer;
+	TimerTask gorev;
    Game() throws Exception {   // --- Contructor
 	   
                  
@@ -49,24 +59,25 @@ public class Game {
          public void mouseReleased(TextMouseEvent arg0) {}
       };
       cn.getTextWindow().addTextMouseListener(tmlis);
-      playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;
-     
+      playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;initScore=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+      playSlow=false;playAver=false; playFast=false; gameMod2=false;
    }
   
    	public void menu() throws InterruptedException, IOException {
-   	  playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;
+   	  playAgain = false;
+      playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+      playSlow=false;playAver=false; playFast=false; gameMod2=false;
    	  mousepr=0;
-      game=new SnakeGame();
-   	  game.init();
+   	  if(!initScore) {
+   		  game.initScore();
+   		  initScore=true;
+   	  }
       clear();
       opening();
       int px=5,py=5;
-      //flag=true;
       while(true) {
          if(mousepr==1) {  // if mouse button pressed
-            //cn.getTextWindow().output(mousex,mousey,'#');  // write a char to x,y position without changing cursor position
             px=mousex; py=mousey;
-            //System.out.println(px+ ","+py);
             if((px>=2 && px<=81) && (py>=16 && py<=23) && openingFlag) {
             	clear();
             	menuInterface();
@@ -115,16 +126,70 @@ public class Game {
             	scoreFlag=true;
             	menuFlag=false;
             }
-            else if((px>=32 && px<=53) && (py>=4 && py<=9) && playFlag && !openingFlag) {
+            else if((px>=23 && px<=59) && (py>=8 && py<=12) && playNormal && !openingFlag) {
             	playFlag=false;
             	exitFlag=false;
             	tutorialFlag=false;
             	openingFlag=false;
             	scoreFlag=false;
             	menuFlag=false;
+            	playNormal=true;
+            	playAdvanced=false;
+            	tutorial2Flag=false;
+            	playSlow=true;playAver=true; playFast=true; gameMod2=true;
             	clear();
-            	Timer myTimer = new Timer();
-            	TimerTask gorev = new TimerTask(){
+            	gamemods2();
+            	
+            }
+            else if((px>=57 && px<=64) && (py==27) && !tutorial2Flag && menuFlag) {
+            	scoreFlag=true;
+            	playFlag=true;
+            	exitFlag=true;
+            	tutorialFlag=true;
+            	openingFlag=false;
+            	menuFlag=false;
+            	clear();
+            	menuInterface();
+            }
+            else if((px>=11 && px<=18) && (py==27) && tutorialFlag && !tutorial2Flag){
+            	playFlag=false;
+            	exitFlag=false;
+            	tutorialFlag=false;
+            	menuFlag=true;
+            	openingFlag=false;
+            	scoreFlag=false;
+            	tutorial2Flag=true;
+            	clear();
+            	tutorial();
+            }
+            else if((px>=13 && px<=28) && (py==26) && !tutorialFlag && menuFlag) {
+            	scoreFlag=true;
+            	playFlag=true;
+            	exitFlag=true;
+            	tutorialFlag=true;
+            	openingFlag=false;
+            	menuFlag=false;
+            	clear();
+            	menuInterface();
+            }
+            else if((px>=56 && px<=63) && (py==26) && tutorial2Flag) {
+            	playFlag=false;
+            	exitFlag=false;
+            	tutorialFlag=true;
+            	menuFlag=true;
+            	openingFlag=false;
+            	scoreFlag=false;
+            	tutorial2Flag=false;
+            	clear();
+            	tutorial2();
+            }
+            else if((px>=31 && px<=52) && (py>=4 && py<=7) && playSlow && playNormal && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	clear();
+            	game.init();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
       		 
       		  		@SuppressWarnings("static-access")
 					@Override
@@ -135,21 +200,20 @@ public class Game {
       					//key listener is added
       					cn.getTextWindow().addKeyListener(keyboard);
       					game.getMove(game.rkey);
-      					
+      					game.gameOver(game.snake,game.maps);
       					//controlling game over or not ?
-      					if(game.gameOver(game.snake,game.maps)) {
+      					if(game.isGameOver()) {
       						cn.getTextWindow().setCursorPosition(0, 26);
       						System.out.println("Game over!");
       						//HighScores methods.
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
       						myTimer.cancel();
-      						try {
-								menu();
-							} catch (InterruptedException | IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+      						
+      						
+      						
       						//return;
       						//unused input variable.
       						//@SuppressWarnings("unused")
@@ -163,11 +227,11 @@ public class Game {
       						game.move(game.snake,game.maps);
       						game.displayMap(cn);
       						game.getNewScore().printingCodons(cn);
-      						game.generateWall(game.maps);
+      						game.generateWall(game.maps,Main.tSlow);
       						
       						//determining game level
       						game.setCounterOfTime(game.getCounterOfTime()+1);
-      						if(game.getCounterOfTime()==1000/Main.t) {
+      						if(game.getCounterOfTime()==1000/Main.tSlow) {
       							game.setTime(game.getTime()+1);
       							game.setCounterOfTime(0);
       						}
@@ -177,7 +241,372 @@ public class Game {
       		  };
       		  
       		  //playing game per t.
-      		  myTimer.schedule(gorev,0,Main.t); //  10000ms = 1sn
+      		  myTimer.schedule(gorev,0,Main.tSlow); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=22 && px<=58) && (py>=10 && py<=14) && playAver && playNormal && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	clear();
+            	game.init();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMove(game.rkey);
+      					game.gameOver(game.snake,game.maps);
+      					//controlling game over or not ?
+      					if(game.isGameOver()) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
+      						myTimer.cancel();
+      						
+      						
+      						
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMap(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWall(game.maps,Main.tNormal);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.tNormal) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.tNormal); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=30 && px<=49) && (py>=16 && py<=20) && playFast && playNormal && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	clear();
+            	game.init();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMove(game.rkey);
+      					game.gameOver(game.snake,game.maps);
+      					//controlling game over or not ?
+      					if(game.isGameOver()) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
+      						myTimer.cancel();
+      						
+      						
+      						
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMap(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWall(game.maps,Main.tFast);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.tFast) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.tFast); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=31 && px<=52) && (py>=4 && py<=7) && playSlow && playAdvanced && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	game.initAdvanced();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMoveAdvanced(game.rkey);
+      					game.gameOver(game.snake,game.maps);
+      					//controlling game over or not ?
+      					if(game.isGameOver()) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*50)));
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
+      						myTimer.cancel();
+      						
+      						
+      						
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMapAdvanced(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWallAdvanced(game.maps,Main.tSlowAdvanced);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.tSlowAdvanced) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.tSlowAdvanced); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=22 && px<=58) && (py>=10 && py<=14) && playAver && playAdvanced && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	game.initAdvanced();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMoveAdvanced(game.rkey);
+      					game.gameOver(game.snake,game.maps);
+      					//controlling game over or not ?
+      					if(game.isGameOver()) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*150)));
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
+      						myTimer.cancel();
+      						
+      						
+      						
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMapAdvanced(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWallAdvanced(game.maps,Main.tNormalAdvanced);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.tNormalAdvanced) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.tNormalAdvanced); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=30 && px<=49) && (py>=16 && py<=20) && playFast && playAdvanced && !openingFlag) {
+            	playFlag=false;tutorialFlag=false;exitFlag=false;openingFlag=true;scoreFlag=false;menuFlag=false;tutorial2Flag=false;playNormal=false;playAdvanced=false;
+                playSlow=false;playAver=false; playFast=false; gameMod2=false;
+            	game.initAdvanced();
+            	myTimer = new Timer();
+            	gorev = new TimerTask(){
+      		 
+      		  		@SuppressWarnings("static-access")
+					@Override
+      		  		public void run(){
+      		  			
+      		  			if(game.getNewScore().getCounter()==3)
+      		  				game.getNewScore().givePoint(game.snake);
+      					//key listener is added
+      					cn.getTextWindow().addKeyListener(keyboard);
+      					game.getMoveAdvanced(game.rkey);
+      					game.gameOver(game.snake,game.maps);
+      					//controlling game over or not ?
+      					if(game.isGameOver()) {
+      						cn.getTextWindow().setCursorPosition(0, 26);
+      						System.out.println("Game over!");
+      						//HighScores methods.
+      						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*250)));
+      						game.getNewScore().addHighScores(game.getNewScore().getScore());
+      						game.getNewScore().getHighscores().display();
+      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						playAgain = true;
+      						myTimer.cancel();
+      						
+      						
+      						
+      						//return;
+      						//unused input variable.
+      						//@SuppressWarnings("unused")
+      						//String input=sc.nextLine();
+      						//exit game.
+      		  				//System.exit(1);
+      					}
+      					else {
+      						//game methods.
+      						game.grow(game.snake,game.maps);
+      						game.move(game.snake,game.maps);
+      						game.displayMapAdvanced(cn);
+      						game.getNewScore().printingCodons(cn);
+      						game.generateWallAdvanced(game.maps,Main.tFastAdvanced);
+      						
+      						//determining game level
+      						game.setCounterOfTime(game.getCounterOfTime()+1);
+      						if(game.getCounterOfTime()==1000/Main.tFastAdvanced) {
+      							game.setTime(game.getTime()+1);
+      							game.setCounterOfTime(0);
+      						}
+      					}
+      		  			
+      		  		}
+      		  };
+      		  
+      		  //playing game per t.
+      		  myTimer.schedule(gorev,0,Main.tFastAdvanced); //  10000ms = 1sn
+      		 	
+            }
+            else if((px>=29 && px<=52) && (py>=22 && py<=25) && gameMod2 && !openingFlag) {
+            	playFlag=false;
+            	exitFlag=false;
+            	tutorialFlag=false;
+            	openingFlag=false;
+            	scoreFlag=false;
+            	menuFlag=true;
+            	playNormal=true;
+            	playAdvanced=true;
+            	playSlow=false;
+            	playAver=false;
+            	playFast=false;
+            	gameMod2=false;
+            	clear();
+            	gamemods();
+            }
+            else if((px>=19 && px<=64) && (py>=14 && py<=18) && playAdvanced && !openingFlag) {
+            	playFlag=false;
+            	exitFlag=false;
+            	tutorialFlag=false;
+            	openingFlag=false;
+            	scoreFlag=false;
+            	menuFlag=false;
+            	playNormal=false;
+            	playAdvanced=true;
+            	tutorial2Flag=false;
+            	playSlow=true;
+            	playAver=true;
+            	playFast=true;
+            	gameMod2=true;
+            	clear();
+            	gamemods2();
+            }
+            else if((px>=30 && px<=53) && (py>=20 && py<=24) && !playFlag && menuFlag) {
+            	playFlag=true;
+            	exitFlag=true;
+            	tutorialFlag=true;
+            	tutorial2Flag=false;
+            	openingFlag=false;
+            	scoreFlag=true;
+            	menuFlag=false;
+            	playNormal=false;
+            	playAdvanced=false;
+            	clear();
+            	menuInterface();
+            }
+            else if((px>=32 && px<=53) && (py>=4 && py<=9) && playFlag && !openingFlag) {
+            	
+            	playFlag=false;
+            	exitFlag=false;
+            	tutorialFlag=false;
+            	openingFlag=false;
+            	scoreFlag=false;
+            	menuFlag=true;
+            	playNormal=true;
+            	playAdvanced=true;
+            	clear();
+            	gamemods();
       		 	
             }
             else if((px>=24 && px<=59) && (py>=16 && py<=20) && tutorialFlag && !openingFlag) {
@@ -187,6 +616,7 @@ public class Game {
             	menuFlag=true;
             	openingFlag=false;
             	scoreFlag=false;
+            	tutorial2Flag=true;
             	clear();
             	tutorial();
             }
@@ -198,6 +628,11 @@ public class Game {
          }
          
          Thread.sleep(40);
+         //döngüden çýkmasý için ekledim bunu
+         if(playAgain) {
+        	 clear();
+        	 break;
+         }
       }
      
    }
@@ -234,6 +669,7 @@ public class Game {
 	  
    }
    public void menuInterface() {
+	   clear();
 	   //System.out.println();
 	   System.out.println("                                              _");
 	   System.out.println("                              ___ _ __   __ _| | _____");
@@ -311,8 +747,8 @@ public class Game {
 	   System.out.println("   |  randomly out of four letter(A,C,G,T).When the snake eats these letters,  |");
 	   System.out.println("   |  it becomes longer. If the snake bumps into a wall or its own body the    |");
 	   System.out.println("   |  game is over.                                                            |");
-	   System.out.println("   |                		           RULES                                      |");
-	   System.out.println("   |        	   # The snake starts with 3 letters assigned randomly            |");
+	   System.out.println("   |                		           RULES                                   |");
+	   System.out.println("   |        	   # The snake starts with 3 letters assigned randomly         |");
 	   System.out.println("   |       # There will be 3 letters randomly generated in the game area       |");
 	   System.out.println("   |     at the start. When the snake eats a letter, a new letter must be      |");
 	   System.out.println("   |     generated in the game area to maintain starting number of letters.    |");
@@ -325,12 +761,108 @@ public class Game {
 	   System.out.println("   |      # “#” character shows the wall, if the snake bumps into a wall       |");
 	   System.out.println("   |   or its own body the game will be over.                                  |");
 	   System.out.println("   |                                                                           |");
-	   System.out.println("   |                            | BACK TO MENU |                               |");
+	   System.out.println("   |         | BACK TO MENU |                          | NEXT |                |");
 	   System.out.println("   |___________________________________________________________________________|");
    }
-//   public void scores() throws IOException {
-//	   score.allTimeHighScores();
-//   }
+   public void tutorial2() {
+	   System.out.println("                        _         _             _       _         ");
+	   System.out.println("                       | |_ _   _| |_ ___  _ __(_) __ _| |        ");
+	   System.out.println("                       | __| | | | __/ _ \\| '__| |/ _` | |        ");
+	   System.out.println("                       | |_| |_| | || (_) | |  | | (_| | |        ");
+	   System.out.println("    ____________________\\__|\\__,_|\\__\\___/|_|  |_|\\__,_|_|  ___________________");
+	   System.out.println("   |                                                                           |");
+	   System.out.println("   |                                 SCORING                                   |");
+	   System.out.println("   |	                                                                       |");
+	   System.out.println("   |  40 Point ---> AAA                                                        |");
+	   System.out.println("   |  39 Point ---> CCC                                                        |");
+	   System.out.println("   |  38 Point ---> GGG                                                        |");
+	   System.out.println("   |  37 Point ---> TTT                                                        |");
+	   System.out.println("   |  22 Point ---> CTC, GGA, TCT, CGC, AGA                                    |");
+	   System.out.println("   |  21 Point ---> ATT, TTG, TGT, GGT, TCC, AAT, AAC, AAG, CGG                |");
+	   System.out.println("   |  20 Point ---> ATA, TTA, GTT, GCC, CCT, CCA, ACC, ACA, CAA, GAA           |");
+	   System.out.println("   |  GAG, TAA                                                                 |");
+	   System.out.println("   |  19 Point ---> CTT, GTG, GGC, TGG                                         |");
+	   System.out.println("   |  18 Point ---> TTC, GCG, CCG, TAT, CAC, AGG,                              |");
+	   System.out.println("   |  10 Point ---> ATC, CTA, CTG, GTC, GTA, ATG, TGC, GCT, GCA, ACT,          |");
+	   System.out.println("   |  ACG, TCA, TCG, AGT, AGC, TAC, CAG, CAT, GAT, GAC, CGT, CGA, TAG, TGA     |");
+	   System.out.println("   |                                                                           |");
+	   System.out.println("   |                                GAMEMODS                                   |");
+	   System.out.println("   |                                                                           |");
+	   System.out.println("   |      This game has two maps, Normal and Advanced. Each map has three      |");
+	   System.out.println("   |    speed option; Slow, Normal and Fast. In advanced mode, brown borders   |");
+	   System.out.println("   |    have a portal feature. In advanced mode, you earn extra points per     |");
+	   System.out.println("   |    level; Slow --> 50 Point  Normal --> 150 Point  Fast --> 250 Point     |");
+	   System.out.println("   |                                                                           |");
+	   System.out.println("   |       | BACK |                                     | MENU |               |");
+	   System.out.println("   |___________________________________________________________________________|");
+   }
+   public void gamemods() {
+	   clear();
+	   //System.out.println();
+	   System.out.println("                                              ");
+	   System.out.println("                                                               _");
+	   System.out.println("                 __ _  __ _ _ __ ___   ___ _ __ ___   ___   __| |___   ");
+	   System.out.println("                / _` |/ _` | '_ ` _ \\ / _ \\ '_ ` _ \\ / _ \\ / _` / __|           ");
+	   System.out.println("               | (_| | (_| | | | | | |  __/ | | | | | (_) | (_| \\__ \\");
+	   System.out.println("                \\__, |\\__,_|_| |_| |_|\\___|_| |_| |_|\\___/ \\__,_|___/");
+	   System.out.println("       _________|___/______________________________________________________");
+	   System.out.println("       |                                                                   |");
+	   System.out.println("       |                                                 _                 |");
+	   System.out.println("       |                _ __   ___  _ __ _ __ ___   __ _| |                |");
+	   System.out.println("       |               | '_ \\ / _ \\| '__| '_ ` _ \\ / _` | |                |");
+	   System.out.println("       |               | | | | (_) | |  | | | | | | (_| | |                |");
+	   System.out.println("       |               |_| |_|\\___/|_|  |_| |_| |_|\\__,_|_|                |");
+	   System.out.println("       |                                                                   |");
+	   System.out.println("       |                      _                               _            |");
+	   System.out.println("       |             __ _  __| |_   ____ _ _ __   ___ ___  __| |           |");
+	   System.out.println("       |            / _` |/ _` \\ \\ / / _` | '_ \\ / __/ _ \\/ _` |           |");
+	   System.out.println("       |           | (_| | (_| |\\ V / (_| | | | | (_|  __/ (_| |           |");
+	   System.out.println("       |            \\__,_|\\__,_| \\_/ \\__,_|_| |_|\\___\\___|\\__,_|           |");
+	   System.out.println("       |                                                                   |");
+	   System.out.println("       |                       _                _                          |");
+	   System.out.println("       |                      | |__   __ _  ___| | __                      |");
+	   System.out.println("       |                      | '_ \\ / _` |/ __| |/ /                      |");
+	   System.out.println("       |                      | |_) | (_| | (__|   <                       |");
+	   System.out.println("       |                      |_.__/ \\__,_|\\___|_|\\_\\                      |");
+	   System.out.println("       |                                                                   |");
+	   System.out.println("       |___________________________________________________________________|");
+   }
+   public void gamemods2() {
+	   clear();
+	   //System.out.println();
+	   System.out.println("                                              ");
+	   System.out.println("                                                               _");
+	   System.out.println("                 __ _  __ _ _ __ ___   ___ _ __ ___   ___   __| |___   ");
+	   System.out.println("                / _` |/ _` | '_ ` _ \\ / _ \\ '_ ` _ \\ / _ \\ / _` / __|           ");
+	   System.out.println("               | (_| | (_| | | | | | |  __/ | | | | | (_) | (_| \\__ \\");
+	   System.out.println("                \\__, |\\__,_|_| |_| |_|\\___|_| |_| |_|\\___/ \\__,_|___/");
+	   System.out.println("        _________|___/______________________________________________________");
+	   System.out.println("       |                            _                                       |");
+	   System.out.println("       |                        ___| | _____      __                        |");
+	   System.out.println("       |                       / __| |/ _ \\ \\ /\\ / /                        |");
+	   System.out.println("       |                       \\__ \\ | (_) \\ V  V /                         |");
+	   System.out.println("       |                       |___/_|\\___/ \\_/\\_/                          |");
+	   System.out.println("       |                                                                    |");
+	   System.out.println("       |                                                _                   |");
+	   System.out.println("       |               _ __   ___  _ __ _ __ ___   __ _| |                  |");
+	   System.out.println("       |              | '_ \\ / _ \\| '__| '_ ` _ \\ / _` | |                  |");
+	   System.out.println("       |              | | | | (_) | |  | | | | | | (_| | |                  |");
+	   System.out.println("       |              |_| |_|\\___/|_|  |_| |_| |_|\\__,_|_|                  |");
+	   System.out.println("       |                                                                    |");
+	   System.out.println("       |                        __           _                              |");
+	   System.out.println("       |                       / _| __ _ ___| |_                            |");
+	   System.out.println("       |                      | |_ / _` / __| __|                           |");
+	   System.out.println("       |                      |  _| (_| \\__ \\ |_                            |");
+	   System.out.println("       |                      |_|  \\__,_|___/\\__|                           |");
+	   System.out.println("       |                                                                    |");
+	   System.out.println("       |                      _                _                            |");
+	   System.out.println("       |                     | |__   __ _  ___| | __                        |");
+	   System.out.println("       |                     | '_ \\ / _` |/ __| |/ /                        |");
+	   System.out.println("       |                     | |_) | (_| | (__|   <                         |");
+	   System.out.println("       |                     |_.__/ \\__,_|\\___|_|\\_\\                        |");
+	   System.out.println("       |                                                                    |");
+	   System.out.println("       |____________________________________________________________________|");
+   }
    public void clear() {
 	   for (int i = 0; i < 100; i++) {
 		   System.out.println();

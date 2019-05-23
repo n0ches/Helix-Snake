@@ -19,14 +19,6 @@ public class SingleLinkedList {
 			head = newNode;
 		}
 	}
-	
-	public void delete() {
-		Node temp = head;
-		if(head!=null) {
-			head = temp.getLink();
-		}
-	}
-	
 	public String display()
 	{
 	    String output = "";

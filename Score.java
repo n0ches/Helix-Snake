@@ -37,7 +37,11 @@ public class Score {
 		counter = 3;
 	}
 	//constructor end.
-	
+	public void initScore() {
+		AllPoints = new String[34];
+		score=0;
+		counter = 3;
+	}
 	
 	
 	//reading aminoacids from txt.
@@ -111,6 +115,9 @@ public class Score {
 		}
 		//while end.
 		temp = tempsnake.getHead();
+		// Yeni baþtan okuduðu için score çok fazla artýyordu, onu düzelttim burada
+		// Sürekli codon puanlarýný baþtan ekliyor
+		score = (tempsnake.size() - 3) * 5;
 		while(temp != null)
 		{
 			codon = "";
@@ -118,6 +125,7 @@ public class Score {
 			codon=codon+temp.getData();
 			temp = temp.getLink();
 			}
+		
 	//    comparing and giving point.
 	     Node temp1 = aminoacids.getHead();
 	     while(temp1!= null)
@@ -138,6 +146,7 @@ public class Score {
 						}
 						AllPoints[index] = (temp2.getCodName()+ " - " + temp2.getPoint());
 						index++;
+						
 					}
 					//if end.
 					temp2 = temp2.getNextCod();
@@ -149,23 +158,6 @@ public class Score {
 		//while end.
 	        
 		counter = 0;
-		
-		//copying first three nodes.
-//	    Node temp = list.getHead();
-//	    for (int i = 0; i < 3; i++) {
-//		codon += temp.getData();
-//		temp = temp.getLink();
-//		}
-		//
-	  //reverse of copy.
-	//	String reverseCodon = new StringBuffer(codon).reverse().toString();
-		
-		//comparing txt and copy
-		
-		//row
-		
-		//again counter = 0.
-		
 	}
 	//give point end.
 	
@@ -207,14 +199,58 @@ public class Score {
 	
 	// Takes an input for player name and adds to high scores(DLL) with score current round
 	public void addHighScores(int score) {
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Please, enter your name?");
-		String name = sc.nextLine();
-		highscores.add(name, score);
+        @SuppressWarnings("resource")
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please, enter your name?");
 
-		
-	}
+        //controls already exist names
+        boolean flag;
+        String name;
+
+        name = sc.nextLine();
+        //controlling name is existed or not
+        flag = highscores.isNameExist(name);
+        if(flag == true) {
+            //taking score of existed palyer.
+            if(highscores.ScoreExist(name)<score) 
+            {
+                Node temp = highscores.getHead();
+                while(temp != null) {
+                    if(temp.getName().equalsIgnoreCase(name))
+                    {
+                        temp.setScore(score);
+                        break;
+                    }
+                    temp = temp.getNext();
+                }
+                
+                ////////refresh the highscores linked list
+                DoubleLinkedList temporary = new DoubleLinkedList();
+                temp = highscores.getHead();
+                while(temp != null) {
+                	temporary.add(temp.getName(), temp.getScore());
+                	temp = temp.getNext();
+                }
+                highscores.setHead(null);
+                temp = temporary.getHead();
+                while(temp != null) {
+                	highscores.add(temp.getName(), temp.getScore());
+                	temp = temp.getNext();
+                }
+                }
+            }
+        
+
+
+
+        //input name is unique
+
+        //adds to highscores
+        else
+        highscores.add(name, score);
+
+
+    }
 	//add high score end.
 	
 	
@@ -222,7 +258,7 @@ public class Score {
 	// all time high score.
 	public void allTimeHighScores() throws IOException {
 
-		BufferedReader in = new BufferedReader(new FileReader("highscores.txt"));
+		BufferedReader in = new BufferedReader(new FileReader("HighScoreTable.txt"));
 		String sCurrentLine;
 		try {
 			while((sCurrentLine = in.readLine()) != null) {

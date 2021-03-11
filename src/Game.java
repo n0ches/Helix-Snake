@@ -208,7 +208,7 @@ public class Game {
       						//HighScores methods.
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -269,7 +269,7 @@ public class Game {
       						//HighScores methods.
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -330,7 +330,7 @@ public class Game {
       						//HighScores methods.
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -391,7 +391,7 @@ public class Game {
       						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*50)));
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -452,7 +452,7 @@ public class Game {
       						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*150)));
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -513,7 +513,7 @@ public class Game {
       						game.getNewScore().setScore(game.getNewScore().getScore()+((game.getLevel()*250)));
       						game.getNewScore().addHighScores(game.getNewScore().getScore());
       						game.getNewScore().getHighscores().display();
-      						// mainde tekrar çalýþmasý ve aþaðýda döngüden çýkabilmesi için
+      						// mainde tekrar Ã§alÃ½Ã¾masÃ½ ve aÃ¾aÃ°Ã½da dÃ¶ngÃ¼den Ã§Ã½kabilmesi iÃ§in
       						playAgain = true;
       						myTimer.cancel();
       						
@@ -628,7 +628,7 @@ public class Game {
          }
          
          Thread.sleep(40);
-         //döngüden çýkmasý için ekledim bunu
+         //dÃ¶ngÃ¼den Ã§Ã½kmasÃ½ iÃ§in ekledim bunu
          if(playAgain) {
         	 clear();
         	 break;
@@ -758,7 +758,7 @@ public class Game {
 	   System.out.println("   |        # When the snake eats a letter, the player earns 5 points.         |");
 	   System.out.println("   |   The player will also earn extra points when the snake completes an      |");
 	   System.out.println("   |   amino-acid codon                                                        |");
-	   System.out.println("   |      # “#” character shows the wall, if the snake bumps into a wall       |");
+	   System.out.println("   |      # Â“#Â” character shows the wall, if the snake bumps into a wall       |");
 	   System.out.println("   |   or its own body the game will be over.                                  |");
 	   System.out.println("   |                                                                           |");
 	   System.out.println("   |         | BACK TO MENU |                          | NEXT |                |");

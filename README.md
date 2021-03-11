@@ -13,7 +13,9 @@ contains 3 letter of the DNA coding units T, C, A and G. All 64 possible 3-lette
 G are used either to encode one of these amino acids or as one of the three stop codons that signals the
 end of a sequence.
 
-Detail Information:
+# Detail Information
+
+Game rules: 
 
      - The snake starts with 3 letters assigned randomly out of four letter (A, C, G, T) as highlighted in the figure.
      - There will be 3 letters randomly generated in the game area at the start. When the snake eats a

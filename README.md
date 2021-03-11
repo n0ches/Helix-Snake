@@ -36,10 +36,10 @@ Detail Information:
      - One “#” wall character will appear randomly in every 20 seconds and level increases.
        
              
-# Input file : 
+# Input file 
 “aminoacids.txt” text file contains the names of amino acids, SLC (Single Letter Code) of amino acids, and the codons-points(separated with “-”) for each amino acid in a single line separated by comma (,). Even though the acquired letters will be inserted from the front of the snake, the scoring and codon analysis will be done from back to front of the snake, in reverse direction. 
 
-# Example: 
+# Example
 Assume the snake started with letters CAT. Then snake collected G, T, T and A letters
 respectively. After that, the snake will become the following string of letters; ATTGCAT. The player will earn
 5 points for each letter snake has eaten (4 * 5 = 20 points in total) and after that, the reverse of the snake

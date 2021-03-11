@@ -5,7 +5,7 @@ The goal of the project is to develop a snake game version which can generate am
 # General Information
 The game is played controlling a moving snake in 25*60 area. There are four letters which are A (Adenine), C (Cytosine), G (Guanine) and T (Thymine) in the game area. 
 The snake starts with 3 letters assigned randomly out of four letter (A, C, G, T). When the snake eats these letters, it becomes longer. 
-If the snake bumps into a wall or its own body the game is over.
+If the snake bumps into a wall or its own body the game is over. Also, there are two different maps as normal and advanced and three different speed options as slow, normal and fast. The scoring algorithm for each maps and speed options is different.
 
 # Amino Acids
 There are twenty amino acids found in proteins. Amino acids are represented with codons. Each codon

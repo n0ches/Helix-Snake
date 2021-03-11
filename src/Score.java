@@ -115,8 +115,8 @@ public class Score {
 		}
 		//while end.
 		temp = tempsnake.getHead();
-		// Yeni baştan okuduğu için score çok fazla artıyordu, onu düzelttim burada
-		// Sürekli codon puanlarını baştan ekliyor
+		// Yeni baÃ¾tan okuduÃ°u iÃ§in score Ã§ok fazla artÃ½yordu, onu dÃ¼zelttim burada
+		// SÃ¼rekli codon puanlarÃ½nÃ½ baÃ¾tan ekliyor
 		score = (tempsnake.size() - 3) * 5;
 		while(temp != null)
 		{

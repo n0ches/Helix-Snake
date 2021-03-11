@@ -102,7 +102,7 @@ public class DoubleLinkedList {
 			System.out.println("              ____________|___/\\___\\___/|_|  \\___|___/____________           ");
 			System.out.println("             |                                                    |           ");
 			System.out.println("             |   RANK     NAME                      SCORE         |           ");
-			System.out.println("             |  ¯¯¯¯¯¯   ¯¯¯¯¯¯                    ¯¯¯¯¯¯¯        | ");
+			System.out.println("             |  Â¯Â¯Â¯Â¯Â¯Â¯   Â¯Â¯Â¯Â¯Â¯Â¯                    Â¯Â¯Â¯Â¯Â¯Â¯Â¯        | ");
 			int py=7;
 			while(temp != null && rank <= 10) {
 				String name=temp.getName().toString().trim();
